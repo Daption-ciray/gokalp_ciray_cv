@@ -1,160 +1,127 @@
 <!doctype html>
 <html lang="tr">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>🤖 Agentic CV Botu</title>
-<style>
-  :root { --bg:#0b1020; --card:#0f172a; --txt:#e5e7eb; --mut:#94a3b8; --acc:#22d3ee; --b:#1f2937; }
-  body{margin:0;font-family:system-ui,Inter,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:linear-gradient(180deg,var(--bg),#05070f 60%);color:var(--txt)}
-  .wrap{max-width:980px;margin:28px auto;padding:0 16px}
-  h1{font-size:clamp(22px,3.2vw,32px)}
-  .card{background:var(--card);border:1px solid var(--b);border-radius:16px;padding:16px 16px 10px;margin:14px 0}
-  label{font-weight:600}
-  input,textarea,select{width:100%;padding:10px;border-radius:10px;border:1px solid var(--b);background:#0b1225;color:var(--txt)}
-  textarea{min-height:90px}
-  .grid{display:grid;gap:14px}.grid.two{grid-template-columns:1fr 1fr}
-  @media(max-width:860px){.grid.two{grid-template-columns:1fr}}
-  .btn{background:transparent;border:1px solid var(--b);color:var(--txt);padding:10px 14px;border-radius:10px;cursor:pointer}
-  .btn.primary{border-color:var(--acc)}
-  .row{display:flex;gap:10px;flex-wrap:wrap}
-  .mut{color:var(--mut);font-size:14px}
-  pre{white-space:pre-wrap;background:#0b1225;border:1px solid var(--b);padding:12px;border-radius:12px;max-height:420px;overflow:auto}
-  .log{max-height:240px;overflow:auto}
-  .tag{border:1px solid var(--b);padding:4px 8px;border-radius:999px;font-size:12px;color:var(--mut)}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Abdullah Gökalp ÇIRAY — AI & DevOps Geliştirici</title>
+  <meta name="description" content="Abdullah Gökalp ÇIRAY - AI & DevOps Geliştirici. Eğitim, deneyim, beceriler ve sertifikalar." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <meta property="og:title" content="Abdullah Gökalp ÇIRAY — AI & DevOps Geliştirici" />
+  <meta property="og:type" content="profile" />
+  <meta property="og:locale" content="tr_TR" />
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧠</text></svg>">
 </head>
 <body>
-<div class="wrap">
-  <h1>🤖 Agentic CV Botu <span class="tag">LLM destekli</span></h1>
-  <p class="mut">Formu doldur → Bot eksikleri analiz eder → Profesyonel CV (Markdown/HTML) üretir → Dosya indir.</p>
-
-  <div class="card grid two">
-    <div>
-      <label>Ad Soyad</label><input id="name" />
-      <label style="margin-top:10px">Unvan</label><input id="title" placeholder="AI & DevOps Geliştirici" />
-      <label style="margin-top:10px">İletişim</label><textarea id="contact" placeholder="İstanbul / Maltepe • e-posta • telefon • GitHub/LinkedIn"></textarea>
-      <label style="margin-top:10px">Hakkımda</label><textarea id="about" placeholder="2–4 cümlelik profil"></textarea>
-    </div>
-    <div>
-      <label>Eğitim</label><textarea id="edu" placeholder="- İstanbul Üniversitesi — YBS (2022– ) • AGNO: 3.64"></textarea>
-      <label style="margin-top:10px">Deneyim & Başarılar</label><textarea id="exp" placeholder="- Teknofest Finalist (2025) ..."></textarea>
-      <label style="margin-top:10px">Beceriler (virgülle)</label><input id="skills" placeholder="DevOps, AI, Siber Güvenlik, ..." />
-      <div class="row" style="margin-top:10px">
-        <div style="flex:1">
-          <label>Çıktı Biçimi</label>
-          <select id="format"><option value="markdown">Markdown (.md)</option><option value="html">HTML (.html)</option></select>
-        </div>
-        <div style="flex:1">
-          <label>Stil</label>
-          <select id="style"><option value="minimal">Minimal</option><option value="modern">Modern</option><option value="compact">Kompakt</option></select>
-        </div>
+  <main class="page">
+    <header class="header">
+      <div>
+        <h1>Abdullah Gökalp ÇIRAY</h1>
+        <p class="tagline">AI &amp; DevOps Geliştirici</p>
       </div>
-    </div>
-  </div>
+      <ul class="contacts">
+        <li>📍 İstanbul / Maltepe</li>
+        <li>📧 <a href="mailto:ciraygokalp@gmail.com">ciraygokalp@gmail.com</a></li>
+        <li>📱 <a href="tel:+905301536941">+90 533 131 6941</a></li>
+        <li>🔗 <a href="https://github.com/Daption-ciray" target="_blank" rel="noopener">GitHub</a> ·
+            <a href="https://www.linkedin.com/in/gökalp-çiray-5489b3246" target="_blank" rel="noopener">LinkedIn</a></li>
+      </ul>
+    </header>
 
-  <div class="card">
-    <div class="row">
-      <button class="btn" id="btn-diagnose">🩺 Eksik Analizi</button>
-      <button class="btn primary" id="btn-generate">⚙️ CV Üret (Agent)</button>
-      <button class="btn" id="btn-download" disabled>⬇️ Dosya İndir</button>
-      <span class="mut" style="margin-left:auto">Proxy: <code id="apiUrlShow"></code></span>
-    </div>
-    <div class="grid two" style="margin-top:10px">
-      <div><h3>🧠 Agent Günlüğü</h3><div class="log"><pre id="log"></pre></div></div>
-      <div><h3>📄 Çıktı</h3><pre id="out"></pre></div>
-    </div>
-  </div>
-</div>
+    <section>
+      <h2>Hakkımda</h2>
+      <p>
+        Azimli, meraklı ve sorgulayıcı bir kişiliğe sahibim. 2015’ten bu yana yazılım geliştirme ile ilgileniyorum; son 3 yıldır
+        <strong>DevOps</strong> ve <strong>AI</strong> üzerine yoğunlaştım. Ağ uzmanlığı ve siber güvenlik alanlarında da çalıştım.
+      </p>
+      <p>
+        Farklı sektörlerde edindiğim deneyimler bana
+        <strong>risk yönetimi, iletişim ve stres altında çözüm üretme</strong> becerileri kazandırdı.
+        Güncel olarak doğayla ilgileniyor, <strong>bahçe işleri</strong> ile sürdürülebilirlik ve planlama bakış açımı geliştiriyorum.
+      </p>
+    </section>
 
-<script>
-  const $ = (id)=>document.getElementById(id);
-  const log = (t)=>{ const p = $("log"); p.textContent += t + "\n"; p.parentElement.scrollTop = p.parentElement.scrollHeight; };
+    <section class="grid two">
+      <div>
+        <h2>Eğitim</h2>
+        <ul class="list">
+          <li>
+            <div class="row">
+              <span class="where"><strong>İstanbul Üniversitesi</strong> — Yönetim Bilişim Sistemleri</span>
+              <span class="when">2022 – Halen</span>
+            </div>
+            <div class="muted">AGNO: 3.64</div>
+          </li>
+          <li><span class="where">Özel Vizyon Akademi Fen Lisesi</span> <span class="when">2019 – 2021</span></li>
+          <li><span class="where">Aksaray Şehit Pilot Hamza Gümüşsoy Fen Lisesi</span> <span class="when">2017 – 2019</span></li>
+          <li><span class="where">Aksaray Bilim ve Sanat Merkezi</span> <span class="when">2013 – 2021</span></li>
+        </ul>
 
-  // Varsayılan: senin worker'ın. İstersen URL param ile geçebilirsin: ?api=https://...workers.dev
-  const apiBase = new URLSearchParams(location.search).get("api")
-        || localStorage.getItem("cv_proxy_api")
-        || "https://ancient-cake-5d00.ciraygokalp.workers.dev";
-  $("apiUrlShow").textContent = apiBase;
-  localStorage.setItem("cv_proxy_api", apiBase);
+        <h2>Diller</h2>
+        <ul class="tags">
+          <li>Türkçe (Ana dil)</li>
+          <li>İngilizce (B2)</li>
+          <li>Fransızca (A1)</li>
+        </ul>
 
-  async function llm(messages){
-    const resp = await fetch(apiBase + "/chat", {
-      method:"POST",
-      headers:{"content-type":"application/json"},
-      body: JSON.stringify({messages, model:"gpt-4o-mini", temperature:0.3})
-    });
-    if(!resp.ok){ throw new Error("LLM hatası: " + resp.status); }
-    const j = await resp.json();
-    return j.content;
-  }
+        <h2>Sertifikalar</h2>
+        <ul class="list">
+          <li><strong>AWS Cloud Technical Bootcamp</strong> — 2024</li>
+          <li><strong>Dijital ve Sosyal Medya Pazarlama Uzmanı</strong> — 2023 (İTÜ)</li>
+        </ul>
+      </div>
 
-  function gather(){
-    return {
-      name: $("name").value.trim(),
-      title: $("title").value.trim(),
-      contact: $("contact").value.trim(),
-      about: $("about").value.trim(),
-      edu: $("edu").value.trim(),
-      exp: $("exp").value.trim(),
-      skills: $("skills").value.trim(),
-      format: $("format").value,
-      style: $("style").value
-    };
-  }
-  function fileName(ext){
-    const safe = ($("name").value || "cv").toLowerCase().replace(/\s+/g,"-").replace(/[^a-z0-9\-]/g,"");
-    return `${safe}.${ext}`;
-  }
-  function downloadFile(text, ext){
-    const blob = new Blob([text], {type: ext==="html" ? "text/html;charset=utf-8" : "text/markdown;charset=utf-8"});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a"); a.href = url; a.download = fileName(ext);
-    document.body.appendChild(a); a.click(); URL.revokeObjectURL(url); a.remove();
-  }
+      <div>
+        <h2>Deneyim &amp; Başarılar</h2>
+        <ul class="list">
+          <li><span class="where"><strong>Teknofest</strong> — Finalist</span> <span class="when">2025</span></li>
+          <li>
+            <div class="row">
+              <span class="where"><strong>İstanbul Üniversitesi</strong> — İstanbul BTC (Stajyer)</span>
+              <span class="when">2023 – 2025</span>
+            </div>
+          </li>
+          <li>
+            <div class="row">
+              <span class="where"><strong>Türkiye Bilişim Derneği İstanbul Genç</strong> — Yönetim Kurulu Üyesi</span>
+              <span class="when">2024 – Halen</span>
+            </div>
+          </li>
+          <li><span class="where"><strong>Acunnmedya Akademi</strong> — Stajyer</span> <span class="when">2024</span></li>
+          <li><span class="where"><strong>TÜBİTAK Lise Öğrencileri Araştırma Projeleri</strong> — Bölge Finalisti</span> <span class="when">2020</span></li>
+          <li><span class="where"><strong>1. Ulusal Liseler Arası Hackathon</strong> — Üçüncülük</span> <span class="when">2019</span></li>
+        </ul>
 
-  $("btn-diagnose").onclick = async () => {
-    const d = gather();
-    const sys = `Sen bir CV Editörü/Asistanısın.
-- Türkçe yaz.
-- Bilgileri kontrol et: eksik/çelişki/kronoloji/profesyonellik.
-- Kısa maddelerle eksikleri ve önerileri ver.`;
-    const user = `Ham veri:
-Ad Soyad: ${d.name}
-Unvan: ${d.title}
-İletişim: ${d.contact}
-Hakkımda: ${d.about}
-Eğitim: ${d.edu}
-Deneyim: ${d.exp}
-Beceriler: ${d.skills}`;
-    try{ log("🩺 Eksik analizi…"); const content = await llm([{role:"system",content:sys},{role:"user",content:user}]); $("out").textContent = content; log("✅ Tanılama tamam."); $("btn-download").disabled = true; }
-    catch(e){ log("❌ " + e.message); }
-  };
+        <h2>Beceriler</h2>
+        <ul class="tags">
+          <li>DevOps</li><li>AI</li><li>Siber Güvenlik</li><li>Risk Yönetimi</li>
+          <li>Ekip Çalışması</li><li>Liderlik</li><li>Analitik Düşünme</li><li>Kriz Yönetimi</li>
+          <li>Okçuluk</li><li>Judo</li><li>Bahçe işleri</li>
+        </ul>
+      </div>
+    </section>
 
-  $("btn-generate").onclick = async () => {
-    const d = gather();
-    const sys = `Sen bir Agentic CV Üreticisisin.
-1) Veriyi normalize et (ad, tarihler).
-2) Gerekirse makul varsayım yap.
-3) FORMAT (markdown|html) ve STIL (minimal|modern|compact) ile final CV üret.
-Kurallar: Türkçe, temiz, kısa; tarih aralıkları tutarlı; "Hakkımda" 2–4 cümle; gereksiz kişisel detay yok.`;
-    const user = `FORMAT=${d.format} STIL=${d.style}
-Ad Soyad: ${d.name}
-Unvan: ${d.title}
-İletişim: ${d.contact}
-Hakkımda: ${d.about}
-Eğitim: ${d.edu}
-Deneyim: ${d.exp}
-Beceriler: ${d.skills}`;
-    try{ log("⚙️ Üretim…"); const content = await llm([{role:"system",content:sys},{role:"user",content:user}]); $("out").textContent = content; log("✅ CV üretildi."); $("btn-download").disabled = false; }
-    catch(e){ log("❌ " + e.message); }
-  };
+    <!-- 👇 Yeni bölüm: Agentic CV Botu butonu -->
+    <section>
+      <h2>🤖 Agentic CV Botu</h2>
+      <p>Kendi profesyonel CV’nizi otomatik oluşturmak için aşağıdaki butona tıklayın:</p>
+      <a class="btn-bot"
+         href="cv-agent.html?api=https://ancient-cake-5d00.ciraygokalp.workers.dev"
+         target="_blank" rel="noopener">
+        🚀 CV Botunu Kullan
+      </a>
+    </section>
 
-  $("btn-download").onclick = ()=>{
-    const d = gather();
-    const ext = d.format === "html" ? "html" : "md";
-    downloadFile($("out").textContent || "", ext);
-  };
-</script>
+    <footer class="footer">
+      <button class="print" onclick="window.print()">🖨️ Yazdır / PDF</button>
+      <span>© <span id="y"></span> Abdullah Gökalp Çıray</span> ·
+      <a href="cv-agent.html?api=https://ancient-cake-5d00.ciraygokalp.workers.dev" target="_blank" rel="noopener">🤖 Agentic CV Botu</a>
+    </footer>
+  </main>
+
+  <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
 </body>
 </html>

@@ -24,4 +24,19 @@ h2{font-size:20px;letter-spacing:.3px;margin:0 0 12px 0;border-bottom:1px dashed
 .footer{display:flex;justify-content:space-between;align-items:center;color:var(--muted);margin:20px 4px}
 .print{border:1px solid var(--border);background:transparent;color:var(--text);padding:8px 12px;border-radius:10px;cursor:pointer}
 .print:hover{border-color:var(--accent)}
+/* 👇 Yeni: CV Botu butonu */
+.btn-bot{
+  display:inline-block;
+  margin-top:12px;
+  padding:12px 20px;
+  background:var(--accent);
+  color:#fff !important;
+  border-radius:10px;
+  font-weight:600;
+  text-decoration:none;
+  transition:background .2s ease, transform .05s ease;
+  box-shadow:0 4px 16px rgba(0,0,0,.25);
+}
+.btn-bot:hover{background:#0891b2; text-decoration:none}
+.btn-bot:active{transform:translateY(1px)}
 @media print{body{background:#fff}.page{margin:0;max-width:none}.header,section{box-shadow:none}.print{display:none}a{color:inherit;text-decoration:none}}
