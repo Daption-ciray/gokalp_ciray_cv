@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>🤖 Agentic CV Botu</title>
+<style>
+  :root { --bg:#0b1020; --card:#0f172a; --txt:#e5e7eb; --mut:#94a3b8; --acc:#22d3ee; --b:#1f2937; }
+  body{margin:0;font-family:system-ui,Inter,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:linear-gradient(180deg,var(--bg),#05070f 60%);color:var(--txt)}
+  .wrap{max-width:980px;margin:28px auto;padding:0 16px}
+  h1{font-size:clamp(22px,3.2vw,32px)}
+  .card{background:var(--card);border:1px solid var(--b);border-radius:16px;padding:16px 16px 10px;margin:14px 0}
+  label{font-weight:600}
+  input,textarea,select{width:100%;padding:10px;border-radius:10px;border:1px solid var(--b);background:#0b1225;color:var(--txt)}
+  textarea{min-height:90px}
+  .grid{display:grid;gap:14px}.grid.two{grid-template-columns:1fr 1fr}
+  @media(max-width:860px){.grid.two{grid-template-columns:1fr}}
+  .btn{background:transparent;border:1px solid var(--b);color:var(--txt);padding:10px 14px;border-radius:10px;cursor:pointer}
+  .btn.primary{border-color:var(--acc)}
+  .row{display:flex;gap:10px;flex-wrap:wrap}
+  .mut{color:var(--mut);font-size:14px}
+  pre{white-space:pre-wrap;background:#0b1225;border:1px solid var(--b);padding:12px;border-radius:12px;max-height:420px;overflow:auto}
+  .log{max-height:240px;overflow:auto}
+  .tag{border:1px solid var(--b);padding:4px 8px;border-radius:999px;font-size:12px;color:var(--mut)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🤖 Agentic CV Botu <span class="tag">LLM destekli</span></h1>
+  <p class="mut">Formu doldur → Bot eksikleri analiz eder → Profesyonel CV (Markdown/HTML) üretir → Dosya indir.</p>
+
+  <div class="card grid two">
+    <div>
+      <label>Ad Soyad</label><input id="name" />
+      <label style="margin-top:10px">Unvan</label><input id="title" placeholder="AI & DevOps Geliştirici" />
+      <label style="margin-top:10px">İletişim</label><textarea id="contact" placeholder="İstanbul / Maltepe • e-posta • telefon • GitHub/LinkedIn"></textarea>
+      <label style="margin-top:10px">Hakkımda</label><textarea id="about" placeholder="2–4 cümlelik profil"></textarea>
+    </div>
+    <div>
+      <label>Eğitim</label><textarea id="edu" placeholder="- İstanbul Üniversitesi — YBS (2022– ) • AGNO: 3.64"></textarea>
+      <label style="margin-top:10px">Deneyim & Başarılar</label><textarea id="exp" placeholder="- Teknofest Finalist (2025) ..."></textarea>
+      <label style="margin-top:10px">Beceriler (virgülle)</label><input id="skills" placeholder="DevOps, AI, Siber Güvenlik, ..." />
+      <div class="row" style="margin-top:10px">
+        <div style="flex:1">
+          <label>Çıktı Biçimi</label>
+          <select id="format"><option value="markdown">Markdown (.md)</option><option value="html">HTML (.html)</option></select>
+        </div>
+        <div style="flex:1">
+          <label>Stil</label>
+          <select id="style"><option value="minimal">Minimal</option><option value="modern">Modern</option><option value="compact">Kompakt</option></select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="row">
+      <button class="btn" id="btn-diagnose">🩺 Eksik Analizi</button>
+      <button class="btn primary" id="btn-generate">⚙️ CV Üret (Agent)</button>
+      <button class="btn" id="btn-download" disabled>⬇️ Dosya İndir</button>
+      <span class="mut" style="margin-left:auto">Proxy: <code id="apiUrlShow"></code></span>
+    </div>
+    <div class="grid two" style="margin-top:10px">
+      <div><h3>🧠 Agent Günlüğü</h3><div class="log"><pre id="log"></pre></div></div>
+      <div><h3>📄 Çıktı</h3><pre id="out"></pre></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const $ = (id)=>document.getElementById(id);
+  const log = (t)=>{ const p = $("log"); p.textContent += t + "\n"; p.parentElement.scrollTop = p.parentElement.scrollHeight; };
+
+  // Varsayılan: senin worker'ın. İstersen URL param ile geçebilirsin: ?api=https://...workers.dev
+  const apiBase = new URLSearchParams(location.search).get("api")
+        || localStorage.getItem("cv_proxy_api")
+        || "https://ancient-cake-5d00.ciraygokalp.workers.dev";
+  $("apiUrlShow").textContent = apiBase;
+  localStorage.setItem("cv_proxy_api", apiBase);
+
+  async function llm(messages){
+    const resp = await fetch(apiBase + "/chat", {
+      method:"POST",
+      headers:{"content-type":"application/json"},
+      body: JSON.stringify({messages, model:"gpt-4o-mini", temperature:0.3})
+    });
+    if(!resp.ok){ throw new Error("LLM hatası: " + resp.status); }
+    const j = await resp.json();
+    return j.content;
+  }
+
+  function gather(){
+    return {
+      name: $("name").value.trim(),
+      title: $("title").value.trim(),
+      contact: $("contact").value.trim(),
+      about: $("about").value.trim(),
+      edu: $("edu").value.trim(),
+      exp: $("exp").value.trim(),
+      skills: $("skills").value.trim(),
+      format: $("format").value,
+      style: $("style").value
+    };
+  }
+  function fileName(ext){
+    const safe = ($("name").value || "cv").toLowerCase().replace(/\s+/g,"-").replace(/[^a-z0-9\-]/g,"");
+    return `${safe}.${ext}`;
+  }
+  function downloadFile(text, ext){
+    const blob = new Blob([text], {type: ext==="html" ? "text/html;charset=utf-8" : "text/markdown;charset=utf-8"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a"); a.href = url; a.download = fileName(ext);
+    document.body.appendChild(a); a.click(); URL.revokeObjectURL(url); a.remove();
+  }
+
+  $("btn-diagnose").onclick = async () => {
+    const d = gather();
+    const sys = `Sen bir CV Editörü/Asistanısın.
+- Türkçe yaz.
+- Bilgileri kontrol et: eksik/çelişki/kronoloji/profesyonellik.
+- Kısa maddelerle eksikleri ve önerileri ver.`;
+    const user = `Ham veri:
+Ad Soyad: ${d.name}
+Unvan: ${d.title}
+İletişim: ${d.contact}
+Hakkımda: ${d.about}
+Eğitim: ${d.edu}
+Deneyim: ${d.exp}
+Beceriler: ${d.skills}`;
+    try{ log("🩺 Eksik analizi…"); const content = await llm([{role:"system",content:sys},{role:"user",content:user}]); $("out").textContent = content; log("✅ Tanılama tamam."); $("btn-download").disabled = true; }
+    catch(e){ log("❌ " + e.message); }
+  };
+
+  $("btn-generate").onclick = async () => {
+    const d = gather();
+    const sys = `Sen bir Agentic CV Üreticisisin.
+1) Veriyi normalize et (ad, tarihler).
+2) Gerekirse makul varsayım yap.
+3) FORMAT (markdown|html) ve STIL (minimal|modern|compact) ile final CV üret.
+Kurallar: Türkçe, temiz, kısa; tarih aralıkları tutarlı; "Hakkımda" 2–4 cümle; gereksiz kişisel detay yok.`;
+    const user = `FORMAT=${d.format} STIL=${d.style}
+Ad Soyad: ${d.name}
+Unvan: ${d.title}
+İletişim: ${d.contact}
+Hakkımda: ${d.about}
+Eğitim: ${d.edu}
+Deneyim: ${d.exp}
+Beceriler: ${d.skills}`;
+    try{ log("⚙️ Üretim…"); const content = await llm([{role:"system",content:sys},{role:"user",content:user}]); $("out").textContent = content; log("✅ CV üretildi."); $("btn-download").disabled = false; }
+    catch(e){ log("❌ " + e.message); }
+  };
+
+  $("btn-download").onclick = ()=>{
+    const d = gather();
+    const ext = d.format === "html" ? "html" : "md";
+    downloadFile($("out").textContent || "", ext);
+  };
+</script>
+</body>
+</html>
