@@ -100,15 +100,33 @@ h2{
 .btn-bot:hover{background:#0891b2;text-decoration:none}
 .btn-bot:active{transform:translateY(1px)}
 
-/* 👇 PDF/Print için düzen */
-@media print {
-  body{background:#fff}
-  .page{margin:0;max-width:none}
-  .header,section{box-shadow:none}
-  .print,
-  .btn-bot,
-  .footer,
-  section:has(.btn-bot) {
-    display:none !important;
+/* === PRINT/PDF: Sadece CV kalsın, bot ve footer görünmesin === */
+@media print{
+  body{background:#fff !important}
+  .page{margin:0 !important;max-width:none !important}
+  .header, section{box-shadow:none !important}
+
+  /* Bot bölümü + içeriği */
+  .bot-section,
+  .bot-section *{
+    display:none !important; visibility:hidden !important;
+    height:0 !important; margin:0 !important; padding:0 !important; border:0 !important;
   }
+
+  /* Eski tarayıcılar için ekstra güvence */
+  .btn-bot,
+  section:has(.btn-bot){
+    display:none !important; visibility:hidden !important;
+    height:0 !important; margin:0 !important; padding:0 !important; border:0 !important;
+  }
+
+  /* Yazdır butonu ve footer da gizlensin */
+  .print,
+  .footer{
+    display:none !important; visibility:hidden !important;
+    height:0 !important; margin:0 !important; padding:0 !important; border:0 !important;
+  }
+
+  /* Linklerin yanına otomatik URL eklemeyi kapat (bazı motorlar ekler) */
+  a[href]:after{content:"" !important}
 }
